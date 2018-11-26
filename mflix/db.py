@@ -17,7 +17,6 @@ from pymongo.write_concern import WriteConcern
 from pymongo.errors import DuplicateKeyError, OperationFailure
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
-#from bson.json_util import dumps
 from pymongo.read_concern import ReadConcern
 
 
@@ -194,7 +193,7 @@ def build_query_sort_project(filters):
 
             # TODO: Text and Subfield Search
             # Construct a query that will search for the chosen genre.
-            query = {}
+            query = {"genres": {"$all": filters["genres"]}}
 
     return query, sort, project
 
