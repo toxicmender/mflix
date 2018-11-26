@@ -17,6 +17,7 @@ from pymongo.write_concern import WriteConcern
 from pymongo.errors import DuplicateKeyError, OperationFailure
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
+#from bson.json_util import dumps
 from pymongo.read_concern import ReadConcern
 
 
@@ -76,7 +77,7 @@ def get_movies_by_country(countries):
         # TODO: Projection
         # Find movies matching the "countries" list, but only return the title
         # and _id.
-        return list(db.movies.find({"countries": countries}, {"title": 1}))
+        return list(db.movies.find({"countries": {"$all": countries}}, {"title": 1}))
 
     except Exception as e:
         return e
