@@ -43,7 +43,7 @@ def get_db():
         """
 
         db = g._database = MongoClient(
-        MFLIX_DB_URI,
+        MFLIX_DB_URI, wtimeout=2500, maxPoolSize=50
         # TODO: Connection Pooling
         # Set the maximum connection pool size to 50 active connections.
         # TODO: Timeouts
@@ -76,7 +76,7 @@ def get_movies_by_country(countries):
         # TODO: Projection
         # Find movies matching the "countries" list, but only return the title
         # and _id.
-        return list(db.movies.find())
+        return list(db.movies.find({"countries": countries}, {"title": 1}))
 
     except Exception as e:
         return e
