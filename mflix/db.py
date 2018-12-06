@@ -259,9 +259,15 @@ def get_movie(id):
         # TODO: Get Comments
         # Implement the required pipeline.
         pipeline = [
-            {
-                "$match": {
-                    "_id": ObjectId(id)
+            {'$match': {'_id': ObjectId(id)}},
+            {'$lookup': {
+                'from': 'comments',
+                'let': {'id': '$_id'},
+                'pipeline': [
+                        {'$match': {'$expr': {'$eq': ['$movie_id', '$$id']}}},
+                        {'$sort': {'date': -1}}
+                ],
+                'as': 'comments'
                 }
             }
         ]
