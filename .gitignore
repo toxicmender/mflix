@@ -2,3 +2,4 @@
 **/pycache/
 **.pyc
 env/
+**.*.swp
