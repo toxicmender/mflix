@@ -43,7 +43,7 @@ def get_db():
         """
 
         db = g._database = MongoClient(
-        MFLIX_DB_URI, wtimeout=2500, maxPoolSize=50
+        MFLIX_DB_URI, maxPoolSize=50, wtimeout=2500
         # TODO: Connection Pooling
         # Set the maximum connection pool size to 50 active connections.
         # TODO: Timeouts
@@ -286,7 +286,9 @@ def get_movie(id):
         StopIteration exception is handled. Both exceptions should result in
         `get_movie` returning None.
         """
+        return None
 
+    except (InvalidId) as _:
         return None
 
 
