@@ -2,6 +2,10 @@ from pymongo import MongoClient, UpdateOne
 from pymongo.errors import InvalidOperation
 from bson import ObjectId
 import dateutil.parser as parser
+import configparser
+
+config = configparser.ConfigParser()
+config.read(os.path.abspath(os.path.join(".ini")))
 
 """
 Ticket: Migration
@@ -14,15 +18,15 @@ us. We just need to make sure the correct operations are sent to MongoDB!
 """
 
 # ensure you update your host information below!
-host = "mongodb://localhost:27017"
-mflix = MongoClient(host)["mflix"]
+uri = config['PROD']['MFLIX_DB_URI']
+mflix = MongoClient(uri)["mflix"]
 
 # TODO: Create the proper predicate and projection
 # add a predicate that checks that the "lastupdated" field exists, and then
 # checks that its type is a string
 # a projection is not required, but may help reduce the amount of data sent
 # over the wire!
-predicate = {"some_field": {"$some_operator": "some_expression"}}
+predicate = {"$and": [{"lastupdated": {"$exists": True}}, {"lastupdated": {"$type": "string"}}]}
 projection = None
 
 cursor = mflix.movies.find(predicate, projection)
@@ -47,7 +51,7 @@ try:
     # the new ISODate() type
     bulk_updates = [UpdateOne(
         {"_id": movie.get("doc_id")},
-        {"$some_update_operator": {"some_field_to_update"}}
+        {"$set": {"lastupdated": movie.get("lastupdated")}}
     ) for movie in movies_to_migrate]
 
     # here's where the bulk operation is sent to MongoDB
